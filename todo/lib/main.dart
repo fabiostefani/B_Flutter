@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todo/ListaItens.dart';
 
 import 'models/item.dart';
 
@@ -36,128 +37,128 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'Todo App',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.green),
-      home: HomePage(),
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: ListaItensPage(),
     );
   }
 }
 
-class HomePage extends StatefulWidget {
-  var itens = new List<Item>();
-  HomePage() {
-    itens = [];
-    // itens.add(Item(title: "Banana", done: false));
-    // itens.add(Item(title: "Uva", done: true));
-    // itens.add(Item(title: "Laranja", done: false));
-    // itens.add(Item(title: "Maça", done: true));
-  }
+// class HomePage extends StatefulWidget {
+//   var itens = new List<Item>();
+//   HomePage() {
+//     itens = [];
+//     // itens.add(Item(title: "Banana", done: false));
+//     // itens.add(Item(title: "Uva", done: true));
+//     // itens.add(Item(title: "Laranja", done: false));
+//     // itens.add(Item(title: "Maça", done: true));
+//   }
 
-  @override
-  _HomePageState createState() => _HomePageState();
-}
+//   @override
+//   _HomePageState createState() => _HomePageState();
+// }
 
-class _HomePageState extends State<HomePage> {
-  var newTaskCtrl = TextEditingController();
-  void add() {
-    if (newTaskCtrl.text.isEmpty) return;
-    setState(() {
-      widget.itens.add(
-        Item(title: newTaskCtrl.text, done: false),
-      );
-      newTaskCtrl.text = "";
-      save();
-    });
-  }
+// class _HomePageState extends State<HomePage> {
+//   var newTaskCtrl = TextEditingController();
+//   void add() {
+//     if (newTaskCtrl.text.isEmpty) return;
+//     setState(() {
+//       widget.itens.add(
+//         Item(title: newTaskCtrl.text, done: false),
+//       );
+//       newTaskCtrl.text = "";
+//       save();
+//     });
+//   }
 
-  void remove(int index) {
-    setState(() {
-      widget.itens.removeAt(index);
-      save();
-    });
-  }
+//   void remove(int index) {
+//     setState(() {
+//       widget.itens.removeAt(index);
+//       save();
+//     });
+//   }
 
-  Future load() async {
-    //SEMPRE QUE USAR UM SHARED PREFERENCES, DEVE SER UTILIZADO PROGRAMAÇÃO ASSINCRONA.
-    var prefs = await SharedPreferences.getInstance();
-    var data = prefs.getString('data');
-    if (data == null) {
-      return;
-    }
-    Iterable decoded = jsonDecode(data);
-    List<Item> result = decoded.map((x) => Item.fromJson(x)).toList();
-    setState(() {
-      widget.itens = result;
-    });
-  }
+//   Future load() async {
+//     //SEMPRE QUE USAR UM SHARED PREFERENCES, DEVE SER UTILIZADO PROGRAMAÇÃO ASSINCRONA.
+//     var prefs = await SharedPreferences.getInstance();
+//     var data = prefs.getString('data');
+//     if (data == null) {
+//       return;
+//     }
+//     Iterable decoded = jsonDecode(data);
+//     List<Item> result = decoded.map((x) => Item.fromJson(x)).toList();
+//     setState(() {
+//       widget.itens = result;
+//     });
+//   }
 
-  save() async {
-    var prefs = await SharedPreferences.getInstance();
-    await prefs.setString('data', jsonEncode(widget.itens));
-  }
+//   save() async {
+//     var prefs = await SharedPreferences.getInstance();
+//     await prefs.setString('data', jsonEncode(widget.itens));
+//   }
 
-  _HomePageState() {
-    load();
-  }
+//   _HomePageState() {
+//     load();
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    //newTaskCtrl.clear();
-    return Scaffold(
-      appBar: AppBar(
-        title: TextFormField(
-          controller: newTaskCtrl,
-          keyboardType: TextInputType.text,
-          style: TextStyle(color: Colors.white, fontSize: 18),
-          decoration: InputDecoration(
-            labelText: "Nova tarefa",
-            labelStyle: TextStyle(color: Colors.white),
-          ),
-        ),
-      ),
-      body: ListView.builder(
-        itemCount: widget.itens.length,
-        itemBuilder: (BuildContext context, int index) {
-          final item = widget.itens[index];
-          // return CheckboxListTile(
-          //   title: Text(item.title),
-          //   key: Key(item.title),
-          //   value: item.done,
-          //   onChanged: (value) {
-          //     setState(() {
-          //       item.done = value;
-          //     });
-          //   },
-          // );
-          return Dismissible(
-            child: CheckboxListTile(
-              title: Text(item.title),
-              value: item.done,
-              onChanged: (value) {
-                setState(() {
-                  item.done = value;
-                  save();
-                });
-              },
-            ),
-            key: Key(item.title),
-            background: Container(
-              color: Colors.red.withOpacity(0.2),
-            ),
-            onDismissed: (direction) {
-              //print(direction);
-              remove(index);
-            },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: add,
-        child: Icon(Icons.add),
-        backgroundColor: Colors.pink,
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     //newTaskCtrl.clear();
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: TextFormField(
+//           controller: newTaskCtrl,
+//           keyboardType: TextInputType.text,
+//           style: TextStyle(color: Colors.white, fontSize: 18),
+//           decoration: InputDecoration(
+//             labelText: "Nova tarefa",
+//             labelStyle: TextStyle(color: Colors.white),
+//           ),
+//         ),
+//       ),
+//       body: ListView.builder(
+//         itemCount: widget.itens.length,
+//         itemBuilder: (BuildContext context, int index) {
+//           final item = widget.itens[index];
+//           // return CheckboxListTile(
+//           //   title: Text(item.title),
+//           //   key: Key(item.title),
+//           //   value: item.done,
+//           //   onChanged: (value) {
+//           //     setState(() {
+//           //       item.done = value;
+//           //     });
+//           //   },
+//           // );
+//           return Dismissible(
+//             child: CheckboxListTile(
+//               title: Text(item.title),
+//               value: item.done,
+//               onChanged: (value) {
+//                 setState(() {
+//                   item.done = value;
+//                   save();
+//                 });
+//               },
+//             ),
+//             key: Key(item.title),
+//             background: Container(
+//               color: Colors.red.withOpacity(0.2),
+//             ),
+//             onDismissed: (direction) {
+//               //print(direction);
+//               remove(index);
+//             },
+//           );
+//         },
+//       ),
+//       floatingActionButton: FloatingActionButton(
+//         onPressed: add,
+//         child: Icon(Icons.add),
+//         backgroundColor: Colors.pink,
+//       ),
+//     );
+//   }
+// }
 
 // class MyHomePage extends StatefulWidget {
 //   MyHomePage({Key key, this.title}) : super(key: key);
