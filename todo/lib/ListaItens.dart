@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,7 +27,10 @@ class _ListaItensPageState extends State<ListaItensPage> {
     if (newTaskCtrl.text.isEmpty) return;
     setState(() {
       widget.itens.add(
-        Item(title: newTaskCtrl.text, done: false),
+        Item(
+            title: newTaskCtrl.text,
+            done: false,
+            data: DateTime.now().toString()),
       );
       newTaskCtrl.text = "";
       save();
@@ -92,16 +96,20 @@ class _ListaItensPageState extends State<ListaItensPage> {
           //   },
           // );
           return Dismissible(
-            child: CheckboxListTile(
-              title: Text(item.title),
-              value: item.done,
-              onChanged: (value) {
-                setState(() {
-                  // item.done = value;
-                  // save();
-                  remove(index);
-                });
-              },
+            child: ListTile(
+              title: Text(
+                item.title,
+                style: TextStyle(fontSize: 25, color: Colors.lightBlue),
+              ),
+              subtitle: Text(item.data),
+              // value: item.done,
+              // onChanged: (value) {
+              //   setState(() {
+              //     // item.done = value;
+              //     // save();
+              //     remove(index);
+              //   });
+              // },
             ),
             key: Key(item.title),
             background: Container(
